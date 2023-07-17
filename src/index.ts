@@ -6,6 +6,7 @@ import { translate } from './translate'
 import { MongoDBAdapter, ISession } from '@grammyjs/storage-mongodb'
 import mongoose from 'mongoose'
 import { bottoken, connstring } from './config'
+import FormData from 'form-data'
 interface SessionData {
   state: 'start'
 }
@@ -42,12 +43,13 @@ const main = async () => {
       return
     }
     const data = res.data
+
     if (data.status === 'error') {
       ctx.reply("Ma'lumot olishni iloji bo'lmadi")
       return
     }
-    if (data.whois.rcode == '0') {
-      ctx.reply('domen: ' + data.domain + 'band emas')
+    if (data.whois?.rcode == '0') {
+      ctx.reply('domen: ' + data.domain + '.uz\nholat: band emas')
       return
     }
     if (data.whois?.rcode == '1') {
@@ -57,6 +59,7 @@ const main = async () => {
         text += `${property}: ${resultObjs[property]}\n`
       }
       ctx.reply(text)
+      return
     }
   })
 
