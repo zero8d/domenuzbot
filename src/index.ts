@@ -35,10 +35,7 @@ const main = async () => {
     ctx.reply("Menga domen nomini domen yoki domen.uz shaklida yozib jo'nating")
   })
   bot.hears(
-    [
-      /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-      /([a-zA-Z0-9-]+){2,}/,
-    ],
+    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
     getDomainInfo
   )
   bot.on('message', anyMessageReply)

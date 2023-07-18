@@ -5,8 +5,7 @@ import { whois } from './utils'
 export const getDomainInfo = async (
   ctx: Context & { match: string | RegExpMatchArray }
 ) => {
-  const newMatch = ctx.match[0].match(/([a-zA-Z0-9-]+){3,}/)
-  const word = newMatch ? ctx.match[0] + '.uz' : ctx.match[0]
+  const word = ctx.match[0]
   let res: IWhoIs
   try {
     res = await whois(word)
