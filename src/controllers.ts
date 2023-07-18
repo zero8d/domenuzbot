@@ -5,17 +5,17 @@ import { whois } from './utils'
 export const getDomainInfo = async (
   ctx: Context & { match: string | RegExpMatchArray }
 ) => {
-  const word = ctx.match[0].split('.uz')[0]
+  const word = ctx.match[0]
   let res: IWhoIs
   try {
-    res = await whois(word + '.uz')
+    res = await whois(word)
   } catch (error) {
     console.error(error)
     ctx.reply('Could not fetch')
     return
   }
   if (!res.found) {
-    ctx.reply(`domen: ${word}.uz\nholati: band emas`)
+    ctx.reply(`domen: ${word}\nholati: band emas`)
     return
   }
   let text = ''
@@ -27,7 +27,11 @@ export const getDomainInfo = async (
     }
     text += `${property}: \n     ${resultData[property].join('\n     ')}\n`
   }
-  ctx.reply(text)
+  if (text.length > 0) {
+    ctx.reply(text)
+  } else {
+    ctx.reply('No info')
+  }
 }
 
 export const anyMessageReply = (ctx: Context) => {
