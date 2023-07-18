@@ -1,43 +1,41 @@
-import { lookup } from 'whois'
-export const whois = (domain: string): Promise<IWhoIs> => {
-  return new Promise((resolve, reject) => {
-    lookup(domain, (err, data) => {
-      if (err) {
-        reject(err)
-      }
-      if (data.includes('Sorry, but domain')) {
-        resolve({ found: false })
-      }
-      let objdata: any = { found: true }
-      let lastel = ''
-      data
-        .split('\n')
-        .filter(line => line.indexOf('%') !== 0 && line !== '')
-        .forEach(line => {
-          if (line.indexOf(':') === line.length - 1) {
-            lastel = line.trim().replace(':', '')
-            objdata[line.trim().replace(':', '')] = []
-            return
-          }
-          if (line.indexOf(':') === -1) {
-            objdata[lastel] = [
-              ...objdata[lastel],
-              ...line
-                .split('\t')
-                .map(el =>
-                  el
-                    .trim()
-                    .replace(' [at] ', '@')
-                    .replace('(', '')
-                    .replace(')', '')
-                ),
-            ]
-            return
-          }
-          let infoarr = line.split(':')
-          objdata[infoarr[0].trim()] = infoarr[1].trim()
-        })
-      resolve(objdata)
+import whoislookup from 'freewhois'
+import { resolveTripleslashReference } from 'typescript'
+
+export const whois = async (domain: string) => {
+  const result: IWhoIsInfo = await whoislookup(domain)
+  if (result.message === 'Domain not found') {
+    return { message: result.message, found: false }
+  }
+  const registrantContact: Array<string> = []
+
+  result.entities
+    ?.find(el => el.roles[0] === 'registrant')
+    ?.vcardArray.elements.forEach(el => {
+      let fourthEl = el.at(3)
+      return Array.isArray(fourthEl)
+        ? fourthEl.forEach(el => registrantContact.push(String(el)))
+        : registrantContact.push(String(fourthEl))
     })
-  })
+  const whoisResult: IWhoIs = {
+    status: result.status?.at(0),
+    domainName: result.ldhName,
+    found: true,
+    registrar: String(
+      result.entities
+        ?.find(el => el.roles[0] == 'registrar')
+        ?.vcardArray.elements.find(el => el[0] === 'org')
+        ?.at(-1)
+    ),
+    lastUpdatedDate: result.events?.find(
+      el => el.eventAction === 'last changed'
+    )?.eventDate,
+    createdDate: result.events?.find(el => el.eventAction === 'registration')
+      ?.eventDate,
+    expirationDate: result.events?.find(el => el.eventAction === 'expiration')
+      ?.eventDate,
+    registrantContact: registrantContact.filter(
+      el => el.trim() != '' && el.trim() != '4.0'
+    ),
+  }
+  return whoisResult
 }

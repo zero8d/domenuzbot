@@ -1,12 +1,12 @@
 const whoisPropsNames: any = {
-  'Domain Name': 'Domen nomi',
-  Registrar: "Ro'yxatdan otkazuvchi",
-  Status: 'holati',
-  'Updated Date': 'yangilangan vaqti',
-  'Creation Date': 'ishga tushgan vaqti',
-  'Expiration Date': 'tugash vaqti',
-  Registrant: 'Domen egasi',
-  'Domain servers in listed order': 'Domen serverlari',
+  domainName: 'Domen nomi',
+  registrar: "Ro'yxatdan otkazuvchi",
+  status: 'holati',
+  lastUpdatedDate: 'yangilangan vaqti',
+  createdDate: 'ishga tushgan vaqti',
+  expirationDate: 'tugash vaqti',
+  registrantContact: 'Domen egasi',
+  nameServers: 'Domen serverlari',
 }
 const whoisPropsNamesKeys = Object.keys(whoisPropsNames)
 

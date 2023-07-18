@@ -34,7 +34,13 @@ const main = async () => {
     ctx.session.name = ctx.from?.first_name
     ctx.reply("Menga domen nomini domen yoki domen.uz shaklida yozib jo'nating")
   })
-  bot.hears(/^[\w]{1,50}(\.uz)?$/, getDomainInfo)
+  bot.hears(
+    [
+      /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+      /([a-zA-Z0-9-]+){2,}/,
+    ],
+    getDomainInfo
+  )
   bot.on('message', anyMessageReply)
   bot.catch(err => console.log(err))
   bot.start()
