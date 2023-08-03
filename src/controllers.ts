@@ -11,13 +11,14 @@ export const getDomainInfo = async (
     res = await whois(word)
   } catch (error) {
     console.error(error)
-    ctx.reply('error\n' + error)
+    ctx.reply('Kechirasiz kichiq xatolik yuz berdi.')
     return
   }
   if (!res.found) {
     ctx.reply(`domen: ${word}\nholati: band emas`)
     return
   }
+
   let text = ''
   const resultData = translate(res)
   for (const property in resultData) {
@@ -28,7 +29,7 @@ export const getDomainInfo = async (
       text += `${property}: ${resultData[property]}\n`
       continue
     }
-    text += `${property}: \n     ${resultData[property].join('\n     ')}\n`
+    text += `${property}: \n     ${resultData[property]?.join('\n     ')}\n`
   }
   ctx.reply(text)
 }

@@ -3,17 +3,17 @@ import { resolveTripleslashReference } from 'typescript'
 
 export const whois = async (domain: string) => {
   const result: IWhoIsInfo = await whoislookup(domain)
-  if (result.message === 'Domain not found') {
+  if (result.message === 'Domain not found' || result.errorCode === 404) {
     return { message: result.message, found: false }
   }
   const registrantContact: Array<string> = []
 
   result.entities
     ?.find(el => el.roles[0] === 'registrant')
-    ?.vcardArray.elements.forEach(el => {
+    ?.vcardArray.elements?.forEach(el => {
       let fourthEl = el.at(3)
       return Array.isArray(fourthEl)
-        ? fourthEl.forEach(el => registrantContact.push(String(el)))
+        ? fourthEl?.forEach(el => registrantContact.push(String(el)))
         : registrantContact.push(String(fourthEl))
     })
   const whoisResult: IWhoIs = {
@@ -23,8 +23,8 @@ export const whois = async (domain: string) => {
     registrar: String(
       result.entities
         ?.find(el => el.roles[0] == 'registrar')
-        ?.vcardArray.elements.find(el => el[0] === 'org')
-        ?.at(-1)
+        ?.vcardArray.elements?.find(el => el[0] === 'org')
+        ?.at(-1) || 'Nomalum'
     ),
     lastUpdatedDate: result.events?.find(
       el => el.eventAction === 'last changed'
@@ -33,9 +33,9 @@ export const whois = async (domain: string) => {
       ?.eventDate,
     expirationDate: result.events?.find(el => el.eventAction === 'expiration')
       ?.eventDate,
-    registrantContact: registrantContact.filter(
-      el => el.trim() != '' && el.trim() != '4.0'
-    ),
+    registrantContact:
+      registrantContact.filter(el => el.trim() != '' && el.trim() != '4.0') ||
+      'Nomalum',
   }
   return whoisResult
 }

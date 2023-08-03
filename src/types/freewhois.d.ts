@@ -10,6 +10,8 @@ interface IWhoIsInfo {
   objectClassName?: string
   handle?: string
   ldhName?: string
+  errorCode?: number
+  title?: string
   links?: Array<{
     value: string
     rel: string
