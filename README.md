@@ -4,4 +4,4 @@ Bot ga havola: https://t.me/domenuzbot
 
 Bemalol o'z hissangizni (pull request yaratib) qo'shishingiz mumkin.
 
-`mongodb` `grammyjs`
+`mongodb` `grammyjs` `whois`
